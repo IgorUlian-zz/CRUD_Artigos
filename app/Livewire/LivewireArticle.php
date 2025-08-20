@@ -14,7 +14,7 @@ class LivewireArticle extends Component
     use WithPagination;
     use WithFileUploads;
 
-    public $title, $content, $article_id;
+    public $title, $slug, $article_id;
     public $selectedDevelopers = [];
     public $isOpen = false;
     public $image;
@@ -52,7 +52,7 @@ class LivewireArticle extends Component
     private function resetInputFields()
     {
         $this->title = '';
-        $this->content = '';
+        $this->slug = '';
         $this->article_id = '';
         $this->selectedDevelopers = [];
 
@@ -67,7 +67,7 @@ class LivewireArticle extends Component
     {
         $this->validate([
             'title' => 'required',
-            'content' => 'required',
+            'slug' => 'required',
             'newImage' => 'nullable|image|max:2048',
             'newHtmlFile' => 'nullable|file|mimes:html,htm|max:1024',
         ]);
@@ -91,7 +91,7 @@ class LivewireArticle extends Component
 
         $article = Article::updateOrCreate(['id' => $this->article_id], [
             'title' => $this->title,
-            'content' => $this->content,
+            'slug' => $this->slug,
             'image' => $imagePath,
             'html_file' => $htmlPath,
         ]);
@@ -110,7 +110,7 @@ class LivewireArticle extends Component
         $article = Article::with('developers')->findOrFail($id);
         $this->article_id = $id;
         $this->title = $article->title;
-        $this->content = $article->content;
+        $this->slug = $article->slug;
         $this->selectedDevelopers = $article->developers->pluck('id')->toArray();
         $this->image = $article->image;
         $this->html_file = $article->html_file;

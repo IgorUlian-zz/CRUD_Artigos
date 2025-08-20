@@ -1,10 +1,4 @@
 <div>
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Artigos') }}
-        </h2>
-    </x-slot>
-
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
@@ -84,9 +78,9 @@
                                                 <span class="text-red-500 text-xs">{{ $message }}</span>
                                             @enderror
 
-                                            @if ($html_file_path)
+                                            @if ($html_file)
                                                 <p class="text-sm text-gray-600 mt-2">Arquivo atual: <a
-                                                        href="{{ asset('storage/' . $html_file_path) }}" target="_blank"
+                                                        href="{{ asset('storage/' . $html_file) }}" target="_blank"
                                                         class="text-blue-500 hover:underline">Ver HTML</a></p>
                                             @endif
                                         </div>
@@ -110,7 +104,7 @@
                                     </div>
                                     <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
                                         <button wire:click.prevent="store()" type="button"
-                                            class="inline-flex justify-center w-full rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-600 text-base font-medium text-white hover:bg-blue-700 focus:outline-none sm:ml-3 sm:w-auto sm:text-sm">
+                                            class="inline-flex justify-center w-full rounded-md border border-transparent shadow-sm px-4 py-2 bg-indigo-400 text-base font-medium text-white hover:bg-indigo-500 focus:outline-none sm:ml-3 sm:w-auto sm:text-sm">
                                             Salvar
                                         </button>
                                         <button wire:click="closeModal()" type="button"

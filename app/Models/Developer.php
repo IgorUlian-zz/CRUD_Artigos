@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Support\Facades\Hash;
 
 
 class Developer extends Model
@@ -16,13 +17,24 @@ class Developer extends Model
         'email',
         'password',
         'seniority',
+        'tags',
     ];
+
+    protected $hidden = [
+    'password',
+    ];
+
     protected $casts = [
         'tags' => 'array',
     ];
 
+    public function setPasswordAttribute($value)
+    {
+        $this->attributes['password'] = Hash::make($value);
+    }
+
     public function articles()
     {
-        return $this->belongsToMany(Article::class);
+        return $this->belongsToMany(Article::class, 'developer_article', 'developer_id', 'article_id');
     }
 }

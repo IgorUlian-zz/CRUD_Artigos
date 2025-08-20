@@ -14,11 +14,11 @@ return new class extends Migration
     {
         Schema::create($this->tableName, function (Blueprint $table) {
             $table->id();
-            $table->string('title');
-            $table->text('content');
-            $table->foreignId('author_id')->constrained('developers');
+            $table->string('title')->nullable(false);
+            $table->text('slug')->nullable(false);
             $table->string('image');
-            $table->string('html_file_path');
+            $table->string('html_file')->nullable(false);
+            $table->foreignId('author_id')->constrained('developers');
             $table->timestamps();
         });
     }

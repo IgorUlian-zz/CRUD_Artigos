@@ -53,7 +53,7 @@ use WithPagination;
         $this->developer_id = '';
     }
 
-    public function store()
+   public function store()
     {
         $validationRules = [
             'name' => 'required',
@@ -68,12 +68,18 @@ use WithPagination;
 
         $this->validate($validationRules);
 
-        Developer::updateOrCreate(['id' => $this->developer_id], [
+        $developerData = [
             'name' => $this->name,
             'email' => $this->email,
             'senority' => $this->senority,
             'tags' => explode(',', $this->tags)
-        ]);
+        ];
+
+        if (!empty($this->password)) {
+            $developerData['password'] = $this->password;
+        }
+
+        Developer::updateOrCreate(['id' => $this->developer_id], $developerData);
 
         if (!$this->developer_id) {
             User::create([
