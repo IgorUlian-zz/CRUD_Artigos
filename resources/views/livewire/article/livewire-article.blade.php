@@ -18,7 +18,7 @@
 
                     <!-- O formulário só é incluído e renderizado se a variável $isOpen for verdadeira -->
                     @if($isOpen)
-                        @include('livewire.article.livewire-form')
+                        @include('livewire.article.livewire-article-form')
                     @endif
 
                     <!-- Mensagem de sucesso -->
