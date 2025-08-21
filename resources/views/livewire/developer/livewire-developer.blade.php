@@ -7,26 +7,28 @@
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 text-gray-900">
-                    <div class="p-6 bg-white shadow-sm sm:rounded-lg">
-                        <h2 class="text-2xl font-semibold mb-4 text-gray-800">Gerenciar Desenvolvedores</h2>
+            <div class="p-6 bg-white shadow-sm sm:rounded-lg mx-4">
+                <div class="flex justify-between items-center ">
+                    <h2 class="text-2xl font-semibold text-gray-800">Gerenciar Desenvolvedores</h2>
+                    <button wire:click="create()"
+                        class="bg-indigo-400 hover:bg-indigo-500 text-white font-bold py-2 px-4 ml-4 rounded-lg shadow-md transition ease-in-out duration-150">
+                        Novo Desenvolvedor
+                    </button>
+                </div>
 
-                        <button wire:click="create()"
-                            class="bg-indigo-400 hover:bg-indigo-500 text-white font-bold py-2 px-4 rounded-lg shadow-md transition ease-in-out duration-150">
-                            Novo Desenvolvedor
-                        </button>
+                <!-- CAMPO DE BUSCA -->
+                <div class="mx-4 mt-4">
+                    <input wire:model.live.debounce.300ms="search" type="text"
+                        placeholder="Buscar por nome, email ou senioridade..."
+                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                </div>
 
-                        @if ($isOpen)
-                            @include('livewire.developer.livewire-developer-form')
-                        @endif
-
-                        @if (session()->has('message'))
-                            <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative my-4"
-                                role="alert">
-                                <span class="block sm:inline">{{ session('message') }}</span>
-                            </div>
-                        @endif
+                <!-- O formulário só é incluído e renderizado se a variável $isOpen for verdadeira -->
+                <div class="mt-6">
+                    @if ($isOpen)
+                        @include('livewire.developer.livewire-developer-form')
+                    @endif
+                </div>
 
                         <table class="min-w-full divide-y divide-gray-200 mt-6">
                             <thead class="bg-gray-50">
@@ -42,6 +44,9 @@
                                         Senioridade</th>
                                     <th
                                         class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        Tag's</th>
+                                    <th
+                                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                         Ações</th>
                                 </tr>
                             </thead>
@@ -54,6 +59,8 @@
                                             {{ $developer->email }}</td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                                             {{ $developer->senority }}</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                            {{ implode(', ', $developer->tags) }}</td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                                             <button wire:click="edit({{ $developer->id }})"
                                                 class="text-indigo-600 hover:text-indigo-900">Editar</button>

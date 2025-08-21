@@ -19,12 +19,29 @@ class LivewireDeveloper extends Component
     public $developer_id;
     public $isOpen = false;
     public $showForm = false;
+    public $search = '';
+
+    public function updatingSearch()
+    {
+        $this->resetPage();
+    }
 
     public function render()
     {
+        $query = Developer::query();
+
+        if ($this->search) {
+            $query->where(function ($q) {
+                $q->where('name', 'like', '%' . $this->search . '%')
+                ->orWhere('email', 'like', '%' . $this->search . '%')
+                ->orWhere('senority', 'like', '%' . $this->search . '%')
+                ->orWhere('tags', 'like', '%' . $this->search . '%');
+            });
+        }
+
         return view('livewire.developer.livewire-developer', [
             'showForm' => $this->showForm,
-            'developers' => Developer::paginate(5)
+            'developers' => $query->latest()->paginate(5)
         ]);
     }
 
