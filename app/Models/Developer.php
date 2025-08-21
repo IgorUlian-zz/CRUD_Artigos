@@ -18,6 +18,7 @@ class Developer extends Model
         'password',
         'seniority',
         'tags',
+
     ];
 
     protected $hidden = [

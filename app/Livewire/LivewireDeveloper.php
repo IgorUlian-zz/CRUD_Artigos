@@ -2,19 +2,21 @@
 
 namespace App\Livewire;
 
-use Livewire\Component;
-use Livewire\WithPagination;
 use App\Models\Developer;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\Rule;
+use Livewire\Component;
+use Livewire\WithPagination;
+
 
 class LivewireDeveloper extends Component
 {
-use WithPagination;
+    use WithPagination;
 
     public $name, $email, $senority, $tags;
     public $password, $password_confirmation;
-    public $id_developer;
+    public $developer_id;
     public $isOpen = false;
     public $showForm = false;
 
@@ -46,23 +48,34 @@ use WithPagination;
     {
         $this->name = '';
         $this->email = '';
-        $this->senority = '';
-        $this->tags = '';
         $this->password = '';
         $this->password_confirmation = '';
-        $this->developer_id = '';
+        $this->senority = 'Jr'; // Valor padrão
+        $this->tags = '';
+        $this->developer_id = null; // A CORREÇÃO: Usar null em vez de ''
     }
 
-   public function store()
+    public function store()
     {
         $validationRules = [
             'name' => 'required',
-            'email' => 'required|email|unique:developers,email,' . $this->developer_id . '|unique:users,email',
             'senority' => 'required',
-            'tags' => 'required'
+            'tags' => 'required',
+            'email' => [
+                'required',
+                'email',
+                Rule::unique('developers')->ignore($this->developer_id),
+            ],
         ];
 
-        if (!$this->developer_id) {
+        if ($this->developer_id) {
+            $developer = Developer::find($this->developer_id);
+            if ($developer) {
+                $user = User::where('email', $developer->getOriginal('email'))->first();
+                $validationRules['email'][] = Rule::unique('users')->ignore($user->id ?? null);
+            }
+        } else {
+            $validationRules['email'][] = Rule::unique('users');
             $validationRules['password'] = 'required|min:8|confirmed';
         }
 
@@ -72,14 +85,14 @@ use WithPagination;
             'name' => $this->name,
             'email' => $this->email,
             'senority' => $this->senority,
-            'tags' => explode(',', $this->tags)
+            'tags' => is_array($this->tags) ? $this->tags : explode(',', $this->tags),
         ];
 
         if (!empty($this->password)) {
             $developerData['password'] = $this->password;
         }
 
-        Developer::updateOrCreate(['id' => $this->developer_id], $developerData);
+        $developer = Developer::updateOrCreate(['id' => $this->developer_id], $developerData);
 
         if (!$this->developer_id) {
             User::create([
@@ -87,10 +100,18 @@ use WithPagination;
                 'email' => $this->email,
                 'password' => Hash::make($this->password),
             ]);
+        } else {
+            $user = User::where('email', $developer->getOriginal('email'))->first();
+            if ($user) {
+                $user->update([
+                    'name' => $this->name,
+                    'email' => $this->email,
+                ]);
+            }
         }
 
         session()->flash('message',
-            $this->developer_id ? 'Desenvolvedor atualizado com sucesso.' : 'Desenvolvedor e conta de usuário criados com sucesso.');
+            $this->developer_id ? 'Desenvolvedor atualizado com sucesso.' : 'Desenvolvedor e conta de utilizador criados com sucesso.');
 
         $this->closeModal();
         $this->resetInputFields();
@@ -102,7 +123,11 @@ use WithPagination;
         $this->developer_id = $id;
         $this->name = $developer->name;
         $this->email = $developer->email;
+
+        // A CORREÇÃO ESTÁ AQUI:
+        // Atribui o valor da senioridade do developer à propriedade do componente.
         $this->senority = $developer->senority;
+
         $this->tags = is_array($developer->tags) ? implode(',', $developer->tags) : '';
         $this->password = '';
 
@@ -120,7 +145,7 @@ use WithPagination;
             }
 
             $developer->delete();
-            session()->flash('message', 'Desenvolvedor e conta de usuário deletados com sucesso.');
+            session()->flash('message', 'Desenvolvedor e conta de utilizador deletados com sucesso.');
         }
     }
 }

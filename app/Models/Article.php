@@ -14,8 +14,9 @@ class Article extends Model
     protected $fillable = [
         'title',
         'slug',
-        'html_file_path',
         'image',
+        'html_file',
+
     ];
     protected $hidden = [''];
 

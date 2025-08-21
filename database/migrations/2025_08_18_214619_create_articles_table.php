@@ -18,7 +18,6 @@ return new class extends Migration
             $table->text('slug')->nullable(false);
             $table->string('image');
             $table->string('html_file')->nullable(false);
-            $table->foreignId('author_id')->constrained('developers');
             $table->timestamps();
         });
     }

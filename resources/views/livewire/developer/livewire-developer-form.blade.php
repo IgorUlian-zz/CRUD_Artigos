@@ -32,9 +32,9 @@
                         <label for="senority" class="block text-gray-700 text-sm font-bold mb-2">Senioridade:</label>
                         <select id="senority" wire:model="senority"
                             class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
-                            <option value="Jr">Júnior</option>
-                            <option value="Pl">Pleno</option>
-                            <option value="Sr">Sénior</option>
+                            <option value="Jr">Jr</option>
+                            <option value="Pl">Pl</option>
+                            <option value="Sr">Sr</option>
                         </select>
                         @error('senority')
                             <span class="text-red-500 text-xs">{{ $message }}</span>

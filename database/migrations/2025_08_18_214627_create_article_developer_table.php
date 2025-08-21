@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    var $tableName = 'devs_articles';
+    var $tableName = 'article_developer';
     /**
      * Run the migrations.
      */
@@ -14,7 +14,7 @@ return new class extends Migration
     {
         Schema::create($this->tableName, function (Blueprint $table) {
             $table->id();
-            $table->foreignId('dev_id')->constrained('developers')->onDelete('cascade');
+            $table->foreignId('developer_id')->constrained('developers')->onDelete('cascade');
             $table->foreignId('article_id')->constrained('articles')->onDelete('cascade');
             $table->timestamps();
         });
