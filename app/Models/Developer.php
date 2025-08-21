@@ -36,6 +36,6 @@ class Developer extends Model
 
     public function articles()
     {
-        return $this->belongsToMany(Article::class, 'developer_article', 'developer_id', 'article_id');
+        return $this->belongsToMany(Article::class, 'article_developer', 'developer_id', 'article_id');
     }
 }

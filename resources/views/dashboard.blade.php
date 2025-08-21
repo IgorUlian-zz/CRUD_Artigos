@@ -8,10 +8,12 @@
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 text-gray-900">
-                    <h1> Bem vindo, {{ Auth::user()->name }}</h1>
+                <div class="p-6 bg-white border-b border-gray-200">
+                    <h4 class="text-lg font-semibold text-gray-800 mb-4">Bem vindo, {{ Auth::user()->name }}</h4>
                     <div class="mt-4">
-                        <h1>TESTE</h1>
+                        <hr class="my-6 border-gray-200">
+                        <livewire:stats-dashboard />
+
                     </div>
                 </div>
             </div>

@@ -9,7 +9,6 @@
                 <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
                     <div class="mb-4">
                         <label for="title" class="block text-gray-700 text-sm font-bold mb-2">Título:</label>
-                        {{-- A CORREÇÃO ESTÁ AQUI: Trocado .lazy por .live --}}
                         <input type="text" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700" id="title" wire:model.live="title">
                         @error('title') <span class="text-red-500 text-xs">{{ $message }}</span>@enderror
                     </div>
@@ -46,7 +45,8 @@
                     <!-- Seção para selecionar múltiplos desenvolvedores -->
                     <div class="mb-4">
                         <label class="block text-gray-700 text-sm font-bold mb-2">Desenvolvedores:</label>
-                        <div class="grid grid-cols-2 gap-2">
+                        {{-- A CORREÇÃO ESTÁ AQUI: Ajuste para responsividade --}}
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
                             @foreach($allDevelopers as $developer)
                                 <div>
                                     <label class="inline-flex items-center">
