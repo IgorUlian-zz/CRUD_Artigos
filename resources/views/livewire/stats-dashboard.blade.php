@@ -32,7 +32,7 @@
             @foreach ($developersWithArticleCount as $developer)
                 <span
                     class="inline-flex items-center rounded-md bg-green-400/10 px-3 py-2 text-sm font-medium text-green-500 ring-1 ring-inset ring-green-500/20">
-                    {{ $developer->name }}:
+                    {{ $developer->user->name }}:
                     <strong class="ml-2">{{ $developer->articles_count }} artigos</strong>
                 </span>
             @endforeach

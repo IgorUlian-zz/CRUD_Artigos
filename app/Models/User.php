@@ -45,4 +45,15 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    public function developer()
+    {
+        return $this->hasOne(Developer::class, 'user_id', 'id');
+    }
+
+    public function isDeveloper(): bool
+{
+    //TESTAR SE DAR CERTO A VERIFICAÇÃO ENTRE SIM OU NÃO AQUI.
+    return $this->developer()->exists();
+}
 }

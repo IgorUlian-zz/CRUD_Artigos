@@ -14,28 +14,22 @@ class Developer extends Model
     protected $primaryKey = 'id';
     protected $fillable = [
         'name',
-        'email',
-        'password',
         'seniority',
         'tags',
 
-    ];
-
-    protected $hidden = [
-    'password',
     ];
 
     protected $casts = [
         'tags' => 'array',
     ];
 
-    public function setPasswordAttribute($value)
-    {
-        $this->attributes['password'] = Hash::make($value);
-    }
-
     public function articles()
     {
         return $this->belongsToMany(Article::class, 'article_developer', 'developer_id', 'article_id');
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
     }
 }

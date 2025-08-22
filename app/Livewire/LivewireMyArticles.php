@@ -1,7 +1,6 @@
 <?php
 
 namespace App\Livewire;
-
 use App\Models\Article;
 use App\Models\Developer;
 use Illuminate\Support\Facades\Auth;
@@ -12,7 +11,8 @@ use Livewire\Component;
 use Livewire\WithFileUploads;
 use Livewire\WithPagination;
 
-class LivewireArticle extends Component
+
+class LivewireMyArticles extends Component
 {
     use WithPagination;
     use WithFileUploads;
@@ -32,30 +32,47 @@ class LivewireArticle extends Component
         $this->resetPage();
     }
 
+    // COMENTÁRIO: A única alteração real está neste método 'render'.
     public function render()
     {
-        $query = Article::query();
+        // 1. Primeiro, pegamos o perfil de desenvolvedor do usuário logado.
+        $developer = Auth::user()->developer;
 
-        // Se houver algo no campo de busca, aplica os filtros
-        if ($this->search) {
-            $query->where(function ($q) {
-                // Busca pelo título do artigo
-                $q->where('title', 'like', '%' . $this->search . '%')
-                  // Busca pela data de criação (formato AAAA-MM-DD)
-                  ->orWhere('created_at', 'like', '%' . $this->search . '%')
-                  // Busca pelo nome dos desenvolvedores associados
-                  ->orWhereHas('developers', function ($developerQuery) {
-                      $developerQuery->where('name', 'like', '%' . $this->search . '%');
-                  });
-            });
+        // 2. Se o usuário logado não for um desenvolvedor, ele não tem artigos.
+        // Então, retornamos uma coleção vazia para a view.
+        if (!$developer) {
+            return view('livewire.article.livewire-my-articles', [
+                'articles' => collect([])->paginate(5),
+                'allDevelopers' => Developer::with('user')->get() // Ainda precisamos disso para o formulário
+            ]);
         }
 
-        return view('livewire.Article.livewire-article', [
-            'showForm' => $this->showForm,
-            'articles' => $query->with('developers')->latest()->paginate(5),
-            'allDevelopers' => Developer::all()
+        // 3. A MUDANÇA PRINCIPAL ESTÁ AQUI!
+        // Em vez de buscar em TODOS os artigos (Article::query()),
+        // nós iniciamos a busca a partir dos artigos que JÁ PERTENCEM
+        // a este desenvolvedor específico.
+        $query = $developer->articles();
+
+        // 4. A lógica de busca continua a mesma, mas agora ela só vai
+        // procurar dentro dos artigos que já foram filtrados.
+        if ($this->search) {
+            $query->where('title', 'like', '%' . $this->search . '%');
+        }
+
+        return view('livewire.article.livewire-my-articles', [
+            'articles' => $query->latest()->paginate(5),
+            // COMENTÁRIO: Mantemos a lista de todos os desenvolvedores para
+            // que o formulário de criação/edição de artigo continue funcionando.
+            'allDevelopers' => Developer::with('user')->get()
         ]);
     }
+
+    // =======================================================================
+    // COMENTÁRIO: Todos os métodos abaixo (create, store, edit, delete, etc.)
+    // devem ser uma CÓPIA EXATA dos métodos do seu ArticleManager.
+    // Eles funcionarão da mesma forma, mas a lista de artigos exibida será diferente.
+    // Cole aqui os seus métodos create(), store(), edit(), delete(), etc.
+    // =======================================================================
 
     public function updatedTitle($value)
     {
@@ -92,6 +109,7 @@ class LivewireArticle extends Component
 
     public function store()
     {
+        // Geramos o slug novamente antes da validação para garantir que ele sempre exista.
         $this->slug = Str::slug($this->title);
 
         $this->validate([

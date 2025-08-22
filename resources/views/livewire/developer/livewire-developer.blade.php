@@ -50,26 +50,31 @@
                                     <th
                                         class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                         Senioridade</th>
-                                    <th
+                                    @can('update', new App\Models\User)
+                                        <th
                                         class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                         Ações</th>
+                                    @endcan
                                 </tr>
                             </thead>
                             <tbody class="bg-white divide-y divide-gray-200">
                                 @foreach ($developers as $developer)
                                     <tr>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                            {{ $developer->name }}</td>
+                                            {{ $developer->user->name }}</td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                            {{ $developer->email }}</td>
+                                            {{ $developer->user->email }}</td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                            {{ $developer->senority }}</td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                                            <button wire:click="edit({{ $developer->id }})"
-                                                class="text-indigo-600 hover:text-indigo-900">Editar</button>
-                                            <button wire:click="delete({{ $developer->id }})"
-                                                class="text-red-600 hover:text-red-900 ml-4">Deletar</button>
-                                        </td>
+                                            {{ $developer->seniority }}</td>
+
+                                    @can('update', new App\Models\User)
+                                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                                <button wire:click="edit({{ $developer->id }})"
+                                                    class="text-indigo-600 hover:text-indigo-900 px-3 py-1 border border-indigo-200 rounded-md hover:border-indigo-400 transition">Editar</button>
+                                                <button wire:click="delete({{ $developer->id }})"
+                                                    class="text-red-600 hover:text-red-900 px-3 py-1 border border-indigo-200 rounded-md hover:border-indigo-400 transition">Deletar</button>
+                                            </td>
+                                        @endcan
                                     </tr>
                                 @endforeach
                             </tbody>

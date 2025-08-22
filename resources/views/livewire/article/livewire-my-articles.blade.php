@@ -54,11 +54,9 @@
                                     <th
                                         class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                         Data de Adição</th>
-                                    @can('update', new App\Models\User())
                                         <th
                                             class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                             Ações</th>
-                                    @endcan
                                 </tr>
                             </thead>
                             <tbody class="bg-white divide-y divide-gray-200">
@@ -99,14 +97,12 @@
                                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                                             {{ $article->created_at->format('d/m/Y') }}
                                         </td>
-                                        @can('update', new App\Models\User())
                                             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                                                 <button wire:click="edit({{ $article->id }})"
                                                     class="text-indigo-600 hover:text-indigo-900 px-3 py-1 border border-indigo-200 rounded-md hover:border-indigo-400 transition">Editar</button>
                                                 <button wire:click="delete({{ $article->id }})"
                                                     class="text-red-600 hover:text-red-900 px-3 py-1 border border-indigo-200 rounded-md hover:border-indigo-400 transition">Deletar</button>
                                             </td>
-                                        @endcan
                                     </tr>
                                 @endforeach
                             </tbody>

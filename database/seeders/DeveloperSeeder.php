@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use App\Models\Developer;
+use App\Models\User;
 
 class DeveloperSeeder extends Seeder
 {
@@ -13,44 +14,39 @@ class DeveloperSeeder extends Seeder
      */
     public function run()
     {
-        Developer::create([
-            'name' => 'Beatriz Carmelin',
-            'email' => 'beatriz.carmelin@gmail.com',
-            'password' => '12345678',
-            'senority' => 'Sr',
+        $user1 = User::find(1);
+
+        $user2 = User::find(2);
+
+        $user3 = User::find(3);
+
+        $user4 = User::find(4);
+
+        $user5 = User::find(5);
+
+        $user1->developer()->create([
+            'seniority' => 'Sr',
             'tags' => ['PHP', 'Laravel', 'Livewire']
         ]);
 
-        Developer::create([
-            'name' => 'Osmair Antonio',
-            'email' => 'osmair.antonio@gmail.com',
-            'password' => '12345678',
-            'senority' => 'Pl',
+        $user2->developer()->create([
+            'seniority' => 'Pl',
             'tags' => ['Java', 'Spring', 'NoSQL']
         ]);
 
-        Developer::create([
-            'name' => 'Magda Aparecida',
-            'email' => 'magda.aparecida@gmail.com',
-            'password' => '12345678',
-            'senority' => 'Jr',
+        $user3->developer()->create([
+            'seniority' => 'Jr',
             'tags' => ['NodeJS', 'Javascript', 'MySQL']
         ]);
 
-        Developer::create([
-            'name' => 'Kauane Ulian',
-            'email' => 'kauane.ulian@gmail.com',
-            'password' => '12345678',
-            'senority' => 'Pl',
+        $user4->developer()->create([
+            'seniority' => 'Pl',
             'tags' => ['NextJS', 'JavaScript', 'PostgreSQL']
         ]);
 
-        Developer::create([
-        'name' => 'Fernando Garcia',
-        'email' => 'fernando.garcia@gmail.com',
-        'password' => '12345678',
-        'senority' => 'Jr',
-        'tags' => ['C++', 'Unity3D', 'C#']
+        $user5->developer()->create([
+            'seniority' => 'Jr',
+            'tags' => ['C++', 'Unity3D', 'C#']
 
         ]);
     }

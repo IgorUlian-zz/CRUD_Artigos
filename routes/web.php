@@ -3,27 +3,20 @@
 use Illuminate\Support\Facades\Route;
 use App\Livewire\LivewireArticle;
 use App\Livewire\LivewireDeveloper;
+use App\Livewire\LivewireMyArticles;
 
 Route::view('/', 'welcome');
-
-// Route::view('dashboard', 'dashboard')
-//     ->middleware(['auth', 'verified'])
-//     ->name('dashboard');
 
 Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
+Route::view('profile', 'profile')->middleware(['auth'])->name('profile');
 
-Route::view('profile', 'profile')
-    ->middleware(['auth'])
-    ->name('profile');
-
-// Grupo de rotas que exigem autenticação
 Route::middleware('auth')->group(function () {
 
-    Route::get('/articles', LivewireArticle::class)->name('articles')->middleware(['auth', 'verified']);
-    Route::get('/developers', LivewireDeveloper::class)->name('developers')->middleware(['auth', 'verified']);
-
+    Route::get('/articles', LivewireArticle::class)->middleware(['auth', 'verified'])->name('articles');
+    Route::get('/developers', LivewireDeveloper::class)->middleware(['auth', 'verified'])->name('developers');
+    Route::get('/my-articles', LivewireMyArticles::class)->middleware(['auth'])->name('my-articles');
 });
 require __DIR__.'/auth.php';

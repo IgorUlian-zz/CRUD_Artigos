@@ -9,18 +9,21 @@ use Illuminate\Validation\Rule;
 use Livewire\Component;
 use Livewire\WithPagination;
 
-
 class LivewireDeveloper extends Component
 {
     use WithPagination;
 
-    public $name, $email, $senority, $tags;
+    // Propriedades do formulário
+    public $name, $email, $seniority, $tags;
     public $password, $password_confirmation;
+
+    // Propriedades de controle
     public $developer_id;
     public $isOpen = false;
-    public $showForm = false;
     public $search = '';
 
+    // COMENTÁRIO: Este método do Livewire é chamado sempre que a propriedade 'search' é atualizada.
+    // Ele garante que a paginação volte para a primeira página ao iniciar uma nova busca.
     public function updatingSearch()
     {
         $this->resetPage();
@@ -32,16 +35,23 @@ class LivewireDeveloper extends Component
 
         if ($this->search) {
             $query->where(function ($q) {
-                $q->where('name', 'like', '%' . $this->search . '%')
-                ->orWhere('email', 'like', '%' . $this->search . '%')
-                ->orWhere('senority', 'like', '%' . $this->search . '%')
-                ->orWhere('tags', 'like', '%' . $this->search . '%');
+                $q->where('seniority', 'like', '%' . $this->search . '%')
+                  ->orWhere('tags', 'like', '%' . $this->search . '%')
+                  // ALTERAÇÃO: A busca por email agora é feita na tabela 'users' através do relacionamento.
+                  // O método 'whereHas' filtra os Developers que têm um User correspondente ao critério.
+                ->orWhereHas('user', function ($userQuery) {
+                      $userQuery->where('name', 'like', '%' . $this->search . '%');
+                  })
+                ->orWhereHas('user', function ($userQuery) {
+                      $userQuery->where('email', 'like', '%' . $this->search . '%');
+                  });
             });
         }
 
+        // COMENTÁRIO: O 'with('user')' é uma otimização (Eager Loading).
+        // Ele carrega todos os usuários relacionados de uma só vez, evitando múltiplas consultas ao banco.
         return view('livewire.developer.livewire-developer', [
-            'showForm' => $this->showForm,
-            'developers' => $query->latest()->paginate(5)
+            'developers' => $query->with('user')->latest()->paginate(5)
         ]);
     }
 
@@ -63,105 +73,115 @@ class LivewireDeveloper extends Component
 
     private function resetInputFields()
     {
+        $this->developer_id = null;
         $this->name = '';
         $this->email = '';
         $this->password = '';
         $this->password_confirmation = '';
-        $this->senority = 'Jr'; // Valor padrão
+        $this->seniority = 'Jr'; // Valor padrão para o select/radio no formulário.
         $this->tags = '';
-        $this->developer_id = null; // A CORREÇÃO: Usar null em vez de ''
     }
 
     public function store()
     {
+        // 1. REGRAS DE VALIDAÇÃO
         $validationRules = [
-            'name' => 'required',
-            'senority' => 'required',
+            'seniority' => 'required',
             'tags' => 'required',
-            'email' => [
-                'required',
-                'email',
-                Rule::unique('developers')->ignore($this->developer_id),
-            ],
         ];
 
+        // ALTERAÇÃO: A validação do email foi simplificada e agora foca apenas na tabela 'users'.
         if ($this->developer_id) {
+            // ATUALIZAÇÃO: Encontra o usuário pelo relacionamento para ignorá-lo na validação de email único.
             $developer = Developer::find($this->developer_id);
-            if ($developer) {
-                $user = User::where('email', $developer->getOriginal('email'))->first();
-                $validationRules['email'][] = Rule::unique('users')->ignore($user->id ?? null);
-            }
+            $userIdToIgnore = $developer->user ? $developer->user->id : null;
+            $validationRules['email'] = ['required', 'email', Rule::unique('users')->ignore($userIdToIgnore)];
         } else {
-            $validationRules['email'][] = Rule::unique('users');
+            // CRIAÇÃO: O email deve ser único na tabela 'users' e a senha é obrigatória.
+            $validationRules['email'] = ['required', 'email', Rule::unique('users')];
             $validationRules['password'] = 'required|min:8|confirmed';
         }
 
         $this->validate($validationRules);
 
+        // 2. LÓGICA DE CRIAÇÃO OU ATUALIZAÇÃO
+        // ALTERAÇÃO: O array de dados do Developer foi limpo. Ele não contém mais 'email'.
         $developerData = [
-            'name' => $this->name,
-            'email' => $this->email,
-            'senority' => $this->senority,
-            'tags' => is_array($this->tags) ? $this->tags : explode(',', $this->tags),
+            'seniority' => $this->seniority,
+            // COMENTÁRIO: Transforma a string de tags (separada por vírgulas) em um array para salvar no DB.
+            'tags' => is_array($this->tags) ? $this->tags : array_map('trim', explode(',', $this->tags)),
         ];
 
-        if (!empty($this->password)) {
-            $developerData['password'] = $this->password;
-        }
+        // SE ESTIVER ATUALIZANDO
+        if ($this->developer_id) {
+            $developer = Developer::findOrFail($this->developer_id);
+            $developer->update($developerData);
 
-        $developer = Developer::updateOrCreate(['id' => $this->developer_id], $developerData);
-
-        if (!$this->developer_id) {
-            User::create([
-                'name' => $this->name,
-                'email' => $this->email,
-                'password' => Hash::make($this->password),
-            ]);
-        } else {
-            $user = User::where('email', $developer->getOriginal('email'))->first();
-            if ($user) {
-                $user->update([
+            // Atualiza os dados da conta User associada, usando o relacionamento.
+            if ($developer->user) {
+                $developer->user->update([
                     'name' => $this->name,
                     'email' => $this->email,
                 ]);
             }
+            session()->flash('message', 'Desenvolvedor atualizado com sucesso.');
+
+        // SE ESTIVER CRIANDO
+        } else {
+            // Primeiro, cria a conta de User para o login.
+            $user = User::create([
+                'name' => $this->name,
+                'email' => $this->email,
+                'password' => Hash::make($this->password),
+            ]);
+
+            // Segundo, cria o perfil de Developer associado ao User.
+            // O método 'create' no relacionamento já preenche o 'user_id' automaticamente.
+            $user->developer()->create($developerData);
+
+            session()->flash('message', 'Desenvolvedor e conta de utilizador criados com sucesso.');
         }
 
-        session()->flash('message',
-            $this->developer_id ? 'Desenvolvedor atualizado com sucesso.' : 'Desenvolvedor e conta de utilizador criados com sucesso.');
-
+        // 3. FINALIZAÇÃO
         $this->closeModal();
         $this->resetInputFields();
     }
 
     public function edit($id)
     {
-        $developer = Developer::findOrFail($id);
+        $developer = Developer::with('user')->findOrFail($id);
+
         $this->developer_id = $id;
-        $this->name = $developer->name;
-        $this->email = $developer->email;
+        $this->seniority = $developer->seniority;
 
-        // A CORREÇÃO ESTÁ AQUI:
-        // Atribui o valor da senioridade do developer à propriedade do componente.
-        $this->senority = $developer->senority;
+        // ALTERAÇÃO: O email agora é buscado a partir do relacionamento com o User.
+        $this->email = $developer->user->email;
+        $this->name = $developer->user->name;
 
-        $this->tags = is_array($developer->tags) ? implode(',', $developer->tags) : '';
+        // COMENTÁRIO: Transforma o array de tags de volta em uma string para exibir no campo de texto.
+        $this->tags = is_array($developer->tags) ? implode(', ', $developer->tags) : '';
+
+        // Limpa os campos de senha ao abrir o modal de edição.
         $this->password = '';
+        $this->password_confirmation = '';
 
         $this->openModal();
     }
 
     public function delete($id)
     {
-        $developer = Developer::find($id);
+        $developer = Developer::with('user')->find($id);
 
         if ($developer) {
-            $user = User::where('email', $developer->email)->first();
-            if ($user) {
-                $user->delete();
+            // ALTERAÇÃO: A lógica de exclusão agora é muito mais simples e segura.
+            // Ao deletar o 'User', o banco de dados (se configurado com onDelete('cascade'))
+            // irá automaticamente deletar o perfil 'Developer' associado.
+            if ($developer->user) {
+                $developer->user->delete();
+            } else {
+                // Caso exista um Developer "órfão" (sem User), deleta apenas ele.
+                $developer->delete();
             }
-
-            $developer->delete();
             session()->flash('message', 'Desenvolvedor e conta de utilizador deletados com sucesso.');
         }
     }

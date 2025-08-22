@@ -39,7 +39,7 @@ new #[Layout('layouts.guest')] class extends Component {
     <form wire:submit="register">
         <!-- Group Name -->
         <div>
-            <x-input-label for="name" :value="__('Nome da Equipe')" />
+            <x-input-label for="name" :value="__('Nome do Administrador:')" />
             <x-text-input wire:model="name" id="name" class="block mt-1 w-full" type="text" name="name" required
                 autofocus autocomplete="name" />
             <x-input-error :messages="$errors->get('name')" class="mt-2" />

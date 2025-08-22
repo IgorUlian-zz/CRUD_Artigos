@@ -51,7 +51,7 @@
                                 <div>
                                     <label class="inline-flex items-center">
                                         <input type="checkbox" class="form-checkbox" value="{{ $developer->id }}" wire:model="selectedDevelopers">
-                                        <span class="ml-2">{{ $developer->name }}</span>
+                                        <span class="ml-2">{{ $developer->user->name }}</span>
                                     </label>
                                 </div>
                             @endforeach

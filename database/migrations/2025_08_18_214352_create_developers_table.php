@@ -14,10 +14,8 @@ return new class extends Migration
     {
         Schema::create($this->tableName, function (Blueprint $table) {
             $table->id();
-            $table->string('name')->nullable(false);
-            $table->string('email')->unique()->nullable(false);
-            $table->string('password')->nullable(false);
-            $table->enum('senority', ['Jr', 'Pl', 'Sr'])->default('Jr');
+            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
+            $table->enum('seniority', ['Jr', 'Pl', 'Sr'])->default('Jr');
             $table->string('tags')->nullable();
             $table->rememberToken();
             $table->timestamps();
