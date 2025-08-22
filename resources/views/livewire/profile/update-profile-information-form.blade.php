@@ -64,7 +64,7 @@ new class extends Component {
 <section>
     <header>
         <h2 class="text-lg font-medium text-gray-900">
-            {{ __('Profile Information') }}
+            {{ __('Informações do Perfil') }}
         </h2>
 
         <p class="mt-1 text-sm text-gray-600">
@@ -75,7 +75,7 @@ new class extends Component {
 
     <form wire:submit="updateProfileInformation" class="mt-6 space-y-6">
         <div>
-            <x-input-label for="name" :value="__('Name')" />
+            <x-input-label for="name" :value="__('Nome')" />
             <x-text-input wire:model="name" id="name" name="name" type="text" class="mt-1 block w-full" required
                 autofocus autocomplete="name" />
             <x-input-error class="mt-2" :messages="$errors->get('name')" />
@@ -90,7 +90,7 @@ new class extends Component {
             @if (auth()->user() instanceof \Illuminate\Contracts\Auth\MustVerifyEmail && !auth()->user()->hasVerifiedEmail())
                 <div>
                     <p class="text-sm mt-2 text-gray-800">
-                        {{ __('Your email address is unverified.') }}
+                        {{ __('Seu endereço de e-mail não verificado.') }}
 
                         <button wire:click.prevent="sendVerification"
                             class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
@@ -108,10 +108,10 @@ new class extends Component {
         </div>
 
         <div class="flex items-center gap-4">
-            <x-primary-button>{{ __('Save') }}</x-primary-button>
+            <x-primary-button>{{ __('Atualizar') }}</x-primary-button>
 
             <x-action-message class="me-3" on="profile-updated">
-                {{ __('Saved.') }}
+                {{ __('Atualizado.') }}
             </x-action-message>
         </div>
     </form>

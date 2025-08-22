@@ -34,22 +34,23 @@ class LivewireDeveloper extends Component
         $query = Developer::query();
 
         if ($this->search) {
-            $query->where(function ($q) {
-                $q->where('seniority', 'like', '%' . $this->search . '%')
-                  ->orWhere('tags', 'like', '%' . $this->search . '%')
-                  // ALTERAÇÃO: A busca por email agora é feita na tabela 'users' através do relacionamento.
-                  // O método 'whereHas' filtra os Developers que têm um User correspondente ao critério.
-                ->orWhereHas('user', function ($userQuery) {
-                      $userQuery->where('name', 'like', '%' . $this->search . '%');
+            // COMENTÁRIO: Convertemos o termo de busca para minúsculas aqui, uma única vez.
+            $searchTerm = strtolower($this->search);
+
+            $query->where(function ($q) use ($searchTerm) {
+                // ANTES: $q->where('name', 'like', '%' . $this->search . '%');
+                // DEPOIS: Usamos whereRaw para aplicar a função LOWER() na coluna do banco.
+                $q->whereRaw('LOWER(seniority) LIKE ?', ['%' . $searchTerm . '%'])
+                  ->orWhereRaw('LOWER(tags) LIKE ?', ['%' . $searchTerm . '%'])
+                  ->orWhereHas('user', function ($userQuery) use ($searchTerm) {
+                      $userQuery->whereRaw('LOWER(email) LIKE ?', ['%' . $searchTerm . '%']);
                   })
-                ->orWhereHas('user', function ($userQuery) {
-                      $userQuery->where('email', 'like', '%' . $this->search . '%');
+                  ->orWhereHas('user', function ($userQuery) use ($searchTerm) {
+                      $userQuery->whereRaw('LOWER(name) LIKE ?', ['%' . $searchTerm . '%']);
                   });
             });
         }
 
-        // COMENTÁRIO: O 'with('user')' é uma otimização (Eager Loading).
-        // Ele carrega todos os usuários relacionados de uma só vez, evitando múltiplas consultas ao banco.
         return view('livewire.developer.livewire-developer', [
             'developers' => $query->with('user')->latest()->paginate(5)
         ]);

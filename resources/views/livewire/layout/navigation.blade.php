@@ -45,9 +45,15 @@ new class extends Component {
                 </div>
             </div>
 
-            <!-- Settings Dropdown -->
+
             <div class="hidden sm:flex sm:items-center sm:ms-6">
-                <x-dropdown align="right" width="48">
+                {{-- Colocamos o botão de tema aqui --}}
+                {{-- <x-theme-toggle /> --}}
+
+                {{-- E o dropdown logo em seguida, dentro do mesmo div.
+                     O 'ms-3' adiciona um pequeno espaço entre eles. --}}
+                <div class="ms-3 relative">
+                    <x-dropdown align="right" width="48">
                     <x-slot name="trigger">
                         <button
                             class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none transition ease-in-out duration-150">
@@ -116,17 +122,17 @@ new class extends Component {
             </x-responsive-nav-link>
         </div>
         <div class="pt-2 pb-3 space-y-1">
-                {{-- COMENTÁRIO: Verifica se o usuário é um desenvolvedor. --}}
-                @if (Auth::user()->isDeveloper())
-                    <x-responsive-nav-link :href="route('my-articles')" wire:navigate>
-                        {{ __('Meus artigos') }}
-                    </x-responsive-nav-link>
-                @else
-                    {{-- Se não for, o mesmo link leva para a página de todos os artigos. --}}
-                    <x-responsive-nav-link :href="route('articles')" wire:navigate>
-                        {{ __('Gerenciar Artigos') }}
-                    </x-responsive-nav-link>
-                @endif
+            {{-- COMENTÁRIO: Verifica se o usuário é um desenvolvedor. --}}
+            @if (Auth::user()->isDeveloper())
+                <x-responsive-nav-link :href="route('my-articles')" wire:navigate>
+                    {{ __('Meus artigos') }}
+                </x-responsive-nav-link>
+            @else
+                {{-- Se não for, o mesmo link leva para a página de todos os artigos. --}}
+                <x-responsive-nav-link :href="route('articles')" wire:navigate>
+                    {{ __('Gerenciar Artigos') }}
+                </x-responsive-nav-link>
+            @endif
         </div>
         <div class="pt-2 pb-3 space-y-1">
             <x-responsive-nav-link :href="route('developers')" :active="request()->routeIs('developers')" wire:navigate>
