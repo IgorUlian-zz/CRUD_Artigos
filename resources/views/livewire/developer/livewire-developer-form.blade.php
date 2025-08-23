@@ -2,35 +2,35 @@
 <div class="fixed z-10 inset-0 overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
     <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
         <!-- Fundo do Modal -->
-        <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" aria-hidden="true"></div>
+        <div class="fixed inset-0 bg-gray-500 dark:bg-gray-900 bg-opacity-75 dark:bg-opacity-75 transition-opacity" aria-hidden="true"></div>
         <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
 
         <!-- Conteúdo do Modal -->
         <div
-            class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+            class="inline-block align-bottom bg-white dark:bg-gray-800 rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
             <form>
-                <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                <div class="bg-white dark:bg-gray-800 px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
                     <div class="mb-4">
-                        <label for="name" class="block text-gray-700 text-sm font-bold mb-2">Nome:</label>
+                        <label for="name" class="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2">Nome:</label>
                         <input type="text"
-                            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 leading-tight focus:outline-none focus:shadow-outline"
                             id="name" wire:model="name">
                         @error('name')
                             <span class="text-red-500 text-xs">{{ $message }}</span>
                         @enderror
                     </div>
                     <div class="mb-4">
-                        <label for="email" class="block text-gray-700 text-sm font-bold mb-2">Email:</label>
+                        <label for="email" class="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2">Email:</label>
                         <input type="email"
-                            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 leading-tight focus:outline-none focus:shadow-outline"
                             id="email" wire:model="email">
                         @error('email')
                             <span class="text-red-500 text-xs">{{ $message }}</span>
                         @enderror
                     </div>
                     <div class="mb-4">
-                        <label for="seniority" class="block text-gray-700 text-sm font-bold mb-2">Senioridade:</label>
-                        <select id="seniority" class="shadow appearance-none border rounded w-full py-2 px-3"
+                        <label for="seniority" class="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2">Senioridade:</label>
+                        <select id="seniority" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600"
                             wire:model="seniority">
                             <option value="Jr">Jr</option>
                             <option value="Pl">Pl</option>
@@ -41,10 +41,10 @@
                         @enderror
                     </div>
                     <div class="mb-4">
-                        <label for="tags" class="block text-gray-700 text-sm font-bold mb-2">Tags (separadas por
+                        <label for="tags" class="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2">Tags (separadas por
                             vírgula):</label>
                         <input type="text"
-                            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700" id="tags"
+                            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600" id="tags"
                             wire:model="tags">
                         @error('tags')
                             <span class="text-red-500 text-xs">{{ $message }}</span>
@@ -54,9 +54,9 @@
                     <!-- Campos de senha aparecem apenas na criação -->
                     @if (empty($developer_id))
                         <div class="mb-4">
-                            <label for="password" class="block text-gray-700 text-sm font-bold mb-2">Senha:</label>
+                            <label for="password" class="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2">Senha:</label>
                             <input type="password"
-                                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700"
+                                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600"
                                 id="password" wire:model="password">
                             @error('password')
                                 <span class="text-red-500 text-xs">{{ $message }}</span>
@@ -64,20 +64,20 @@
                         </div>
                         <div class="mb-4">
                             <label for="password_confirmation"
-                                class="block text-gray-700 text-sm font-bold mb-2">Confirmar Senha:</label>
+                                class="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2">Confirmar Senha:</label>
                             <input type="password"
-                                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700"
+                                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600"
                                 id="password_confirmation" wire:model="password_confirmation">
                         </div>
                     @endif
                 </div>
-                <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+                <div class="bg-gray-50 dark:bg-gray-800 dark:border-t dark:border-gray-700 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
                     <button wire:click.prevent="store()" type="button"
                         class="inline-flex justify-center w-full rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-600 text-base font-medium text-white hover:bg-blue-700 focus:outline-none sm:ml-3 sm:w-auto sm:text-sm">
                         Salvar
                     </button>
                     <button wire:click="closeModal()" type="button"
-                        class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">
+                        class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 dark:border-gray-500 shadow-sm px-4 py-2 bg-white dark:bg-gray-600 text-base font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-500 focus:outline-none sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">
                         Cancelar
                     </button>
                 </div>
