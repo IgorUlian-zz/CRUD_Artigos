@@ -24,11 +24,11 @@ new class extends Component {
 
 <section class="space-y-6">
     <header>
-        <h2 class="text-lg font-medium text-gray-900">
+        <h2 class="text-lg font-medium text-gray-900 dark:text-gray-100">
             {{ __('Excluir Conta') }}
         </h2>
 
-        <p class="mt-1 text-sm text-gray-600">
+        <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">
             {{ __('Após a exclusão da sua conta, todos os seus recursos e dados serão excluídos permanentemente. Antes de excluir sua conta, baixe todos os dados ou informações que deseja manter.') }}
         </p>
     </header>
@@ -37,14 +37,13 @@ new class extends Component {
         x-on:click.prevent="$dispatch('open-modal', 'confirm-user-deletion')">{{ __('Excluir Conta') }}</x-danger-button>
 
     <x-modal name="confirm-user-deletion" :show="$errors->isNotEmpty()" focusable>
-        <form wire:submit="deleteUser" class="p-6">
+        <form wire:submit="deleteUser" class="p-6 bg-white dark:bg-gray-800">
 
-            <h2 class="text-lg font-medium text-gray-900">
-                {{ __('
-                Tem certeza de que deseja excluir sua conta?') }}
+            <h2 class="text-lg font-medium text-gray-900 dark:text-gray-100">
+                {{ __('Tem certeza de que deseja excluir sua conta?') }}
             </h2>
 
-            <p class="mt-1 text-sm text-gray-600">
+            <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">
                 {{ __('Após a exclusão da sua conta, todos os seus recursos e dados serão excluídos permanentemente. Por favor, insira sua senha para confirmar que deseja excluir sua conta permanentemente.') }}
             </p>
 
