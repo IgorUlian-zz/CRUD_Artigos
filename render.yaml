@@ -13,3 +13,5 @@ services:
   - type: psql                 # Define que é um banco de dados PostgreSQL
     name: meu-projeto-db       # Dê o mesmo nome que você usou ao criar o banco
     plan: free
+
+#TESTE
