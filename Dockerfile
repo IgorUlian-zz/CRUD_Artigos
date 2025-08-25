@@ -55,6 +55,27 @@ RUN chown -R www-data:www-data /var/www/html && \
 
 EXPOSE 8080
 
-CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
-
 COPY docker/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+
+# ... (tudo que já estava antes)
+
+# Copiar configuração do Nginx e Supervisor
+COPY docker/nginx.conf /etc/nginx/nginx.conf
+COPY docker/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+
+# === INÍCIO DAS MUDANÇAS ===
+
+# Copia o script de inicialização e o torna executável
+COPY docker/entrypoint.sh /usr/local/bin/entrypoint.sh
+RUN chmod +x /usr/local/bin/entrypoint.sh
+
+# Ajustar permissões
+RUN chown -R www-data:www-data /var/www/html && \
+    chmod -R 775 /var/www/html/storage
+
+EXPOSE 8080
+
+# Define o script de inicialização como o ponto de entrada
+ENTRYPOINT ["entrypoint.sh"]
+
+# === FIM DAS MUDANÇAS ===
