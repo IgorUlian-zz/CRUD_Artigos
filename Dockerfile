@@ -37,6 +37,7 @@ COPY --from=vendor /app/vendor /var/www/html/vendor
 
 # Copiar as configurações do Nginx, Supervisor e o script de entrypoint
 COPY docker/nginx.conf /etc/nginx/nginx.conf
+RUN nginx -t
 COPY docker/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 COPY docker/entrypoint.sh /usr/local/bin/entrypoint.sh
 RUN chmod +x /usr/local/bin/entrypoint.sh
