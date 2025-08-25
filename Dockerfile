@@ -45,6 +45,8 @@ COPY --from=frontend /app/routes/ /var/www/html/routes/
 COPY --from=frontend /app/app/ /var/www/html/app/
 COPY --from=frontend /app/bootstrap/ /var/www/html/bootstrap/
 COPY --from=frontend /app/database/ /var/www/html/database/
+COPY --from=frontend /app/composer.json /var/www/html/
+COPY --from=frontend /app/composer.lock /var/www/html/
 
 # Copiar configuração do Nginx
 COPY docker/nginx.conf /etc/nginx/nginx.conf
@@ -62,6 +64,9 @@ COPY docker/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 # Copiar configuração do Nginx e Supervisor
 COPY docker/nginx.conf /etc/nginx/nginx.conf
 COPY docker/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+
+COPY --from=frontend /app/bootstrap/ /var/www/html/bootstrap/
+COPY --from=frontend /app/database/ /var/www/html/database/
 
 # === INÍCIO DAS MUDANÇAS ===
 
