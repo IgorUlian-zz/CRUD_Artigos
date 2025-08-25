@@ -7,6 +7,9 @@ cd /var/www/html
 echo "Running database migrations..."
 php artisan migrate --force
 
+echo "Linking storage..."
+php artisan storage:link
+
 # Agora, crie os arquivos de cache otimizados para produção
 echo "Caching configuration..."
 php artisan config:cache
