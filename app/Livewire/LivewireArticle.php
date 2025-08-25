@@ -4,6 +4,7 @@ namespace App\Livewire;
 
 use App\Models\Article;
 use App\Models\Developer;
+use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -34,21 +35,17 @@ class LivewireArticle extends Component
 
     public function render()
     {
-        $query = Article::query();
+if ($this->search) {
+    $searchTerm = strtolower($this->search);
 
-        // Se houver algo no campo de busca, aplica os filtros
-        if ($this->search) {
-            $query->where(function ($q) {
-                // Busca pelo título do artigo
-                $q->where('title', 'like', '%' . $this->search . '%')
-                  // Busca pela data de criação (formato AAAA-MM-DD)
-                  ->orWhere('created_at', 'like', '%' . $this->search . '%')
-                  // Busca pelo nome dos desenvolvedores associados
-                  ->orWhereHas('developers', function ($developerQuery) {
-                      $developerQuery->where('name', 'like', '%' . $this->search . '%');
-                  });
-            });
-        }
+    $query->where(function ($q) use ($searchTerm) {
+        $q->whereRaw('LOWER(title) LIKE ?', ['%' . $searchTerm . '%'])
+          ->orWhereRaw('LOWER(slug) LIKE ?', ['%' . $searchTerm . '%'])
+          ->orWhereHas('user', function ($userQuery) use ($searchTerm) {
+              $userQuery->whereRaw('LOWER(name) LIKE ?', ['%' . $searchTerm . '%']);
+          });
+    });
+}
 
         return view('livewire.article.livewire-article', [
             'showForm' => $this->showForm,
