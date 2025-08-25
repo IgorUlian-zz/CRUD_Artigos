@@ -4,11 +4,10 @@ namespace App\Livewire;
 
 use App\Models\Article;
 use App\Models\Developer;
-use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
-use Illuminate\Validation\Rule; // Importe a classe Rule
+use Illuminate\Validation\Rule;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 use Livewire\WithPagination;
@@ -35,21 +34,23 @@ class LivewireArticle extends Component
 
     public function render()
     {
-if ($this->search) {
-    $searchTerm = strtolower($this->search);
+        $query = Article::query();
 
-    $query->where(function ($q) use ($searchTerm) {
-        $q->whereRaw('LOWER(title) LIKE ?', ['%' . $searchTerm . '%'])
-          ->orWhereRaw('LOWER(slug) LIKE ?', ['%' . $searchTerm . '%'])
-          ->orWhereHas('user', function ($userQuery) use ($searchTerm) {
-              $userQuery->whereRaw('LOWER(name) LIKE ?', ['%' . $searchTerm . '%']);
-          });
-    });
-}
+        if ($this->search) {
+            $searchTerm = strtolower($this->search);
+
+            $query->where(function ($q) use ($searchTerm) {
+                $q->whereRaw('LOWER(title) LIKE ?', ['%' . $searchTerm . '%'])
+                ->orWhereRaw('LOWER(slug) LIKE ?', ['%' . $searchTerm . '%'])
+                ->orWhereHas('developers.user', function ($userQuery) use ($searchTerm) {
+                    $userQuery->whereRaw('LOWER(users.name) LIKE ?', ['%' . $searchTerm . '%']);
+                });
+            });
+        }
 
         return view('livewire.article.livewire-article', [
             'showForm' => $this->showForm,
-            'articles' => $query->with('developers')->latest()->paginate(5),
+            'articles' => $query->with('developers.user')->latest()->paginate(5),
             'allDevelopers' => Developer::all()
         ]);
     }
@@ -135,27 +136,21 @@ if ($this->search) {
     public function edit($id)
     {
         $article = Article::with('developers')->findOrFail($id);
-
         $this->article_id = $id;
         $this->title = $article->title;
         $this->slug = $article->slug;
         $this->image = $article->image;
         $this->html_file = $article->html_file;
-
         $this->selectedDevelopers = $article->developers->pluck('id')->toArray();
-
         $this->openModal();
     }
 
     public function delete($id)
     {
         $article = Article::findOrFail($id);
-
         if ($article->image) Storage::disk('public')->delete($article->image);
         if ($article->html_file) Storage::disk('public')->delete($article->html_file);
-
         $article->delete();
         session()->flash('message', 'Artigo deletado com sucesso.');
     }
-
 }
