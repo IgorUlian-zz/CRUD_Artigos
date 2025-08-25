@@ -50,7 +50,7 @@ class LivewireArticle extends Component
             });
         }
 
-        return view('livewire.Article.livewire-article', [
+        return view('livewire.article.livewire-article', [
             'showForm' => $this->showForm,
             'articles' => $query->with('developers')->latest()->paginate(5),
             'allDevelopers' => Developer::all()
