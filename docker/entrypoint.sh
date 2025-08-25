@@ -3,13 +3,20 @@
 # Mude para o diretório da aplicação
 cd /var/www/html
 
-# Limpa os caches antigos para garantir que as novas configurações e views sejam usadas
-php artisan config:clear
-php artisan view:clear
-php artisan route:clear
-
-# Rode as migrations do banco de dados
+# Primeiro, garanta que o banco de dados esteja atualizado
+echo "Running database migrations..."
 php artisan migrate --force
 
+# Agora, crie os arquivos de cache otimizados para produção
+echo "Caching configuration..."
+php artisan config:cache
+
+echo "Caching routes..."
+php artisan route:cache
+
+echo "Caching views..."
+php artisan view:cache
+
+echo "Starting server..."
 # Inicie o supervisor (que gerencia o Nginx e o PHP-FPM)
 /usr/bin/supervisord -c /etc/supervisor/conf.d/supervisord.conf
