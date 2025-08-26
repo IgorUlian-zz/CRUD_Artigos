@@ -52,8 +52,8 @@ class User extends Authenticatable
     }
 
     public function isDeveloper(): bool
-{
-    //TESTAR SE DAR CERTO A VERIFICAÇÃO ENTRE SIM OU NÃO AQUI.
-    return $this->developer()->exists();
-}
+    {
+        //TESTAR SE DAR CERTO A VERIFICAÇÃO ENTRE SIM OU NÃO AQUI.
+        return $this->developer()->exists();
+    }
 }

@@ -32,47 +32,29 @@ class LivewireMyArticles extends Component
         $this->resetPage();
     }
 
-    // COMENTÁRIO: A única alteração real está neste método 'render'.
+
     public function render()
     {
-        // 1. Primeiro, pegamos o perfil de desenvolvedor do usuário logado.
+
         $developer = Auth::user()->developer;
 
-        // 2. Se o usuário logado não for um desenvolvedor, ele não tem artigos.
-        // Então, retornamos uma coleção vazia para a view.
         if (!$developer) {
             return view('livewire.article.livewire-my-articles', [
                 'articles' => collect([])->paginate(5),
-                'allDevelopers' => Developer::with('user')->get() // Ainda precisamos disso para o formulário
+                'allDevelopers' => Developer::with('user')->get()
             ]);
         }
 
-        // 3. A MUDANÇA PRINCIPAL ESTÁ AQUI!
-        // Em vez de buscar em TODOS os artigos (Article::query()),
-        // nós iniciamos a busca a partir dos artigos que JÁ PERTENCEM
-        // a este desenvolvedor específico.
         $query = $developer->articles();
-
-        // 4. A lógica de busca continua a mesma, mas agora ela só vai
-        // procurar dentro dos artigos que já foram filtrados.
         if ($this->search) {
             $query->where('title', 'like', '%' . $this->search . '%');
         }
 
         return view('livewire.article.livewire-my-articles', [
             'articles' => $query->latest()->paginate(5),
-            // COMENTÁRIO: Mantemos a lista de todos os desenvolvedores para
-            // que o formulário de criação/edição de artigo continue funcionando.
             'allDevelopers' => Developer::with('user')->get()
         ]);
     }
-
-    // =======================================================================
-    // COMENTÁRIO: Todos os métodos abaixo (create, store, edit, delete, etc.)
-    // devem ser uma CÓPIA EXATA dos métodos do seu ArticleManager.
-    // Eles funcionarão da mesma forma, mas a lista de artigos exibida será diferente.
-    // Cole aqui os seus métodos create(), store(), edit(), delete(), etc.
-    // =======================================================================
 
     public function updatedTitle($value)
     {

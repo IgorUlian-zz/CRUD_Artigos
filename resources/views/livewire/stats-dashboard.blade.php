@@ -1,6 +1,3 @@
-{{-- O div principal não precisa de cor de fundo, pois herda do pai na dashboard.
-     No entanto, se ele tiver uma cor, precisa da classe dark:.
-     Vamos garantir que ele não tenha fundo e apenas controle o texto. --}}
 <div class="text-gray-900 dark:text-gray-100">
     <!-- Seção de Contagens Totais -->
     <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-4">Estatísticas Gerais</h3>
